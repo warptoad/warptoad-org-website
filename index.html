@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Warptoad | Cross-Chain Privacy Token Standard</title>
+  <meta name="description"
+    content="Warptoad is a private cross-chain token standard. It aggregates commitments from multiple chains into a unified 'Giga Root' on Ethereum, enabling assets to move between networks without revealing sender, recipient, or origin chain." />
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:title" content="Warptoad | Cross-Chain Privacy Token Standard" />
+  <meta property="og:description"
+    content="Private cross-chain token standard. Move assets between networks without revealing sender, recipient, or origin. Powered by the Giga Root on Ethereum." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://warptoad.org" />
+  <meta property="og:image" content="/og.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- Tailwind (CDN for speed of launch) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: {
+              900: '#14031c',
+              800: '#1b0b2c',
+              700: '#281342',
+            },
+            neon: {
+              400: '#6BFFB8',
+              500: '#49F89D',
+            },
+            violet: {
+              300: '#B8A5FF',
+              500: '#7E6BFF',
+            }
+          },
+          boxShadow: {
+            glow: '0 0 24px rgba(73, 248, 157, 0.25)'
+          },
+          fontFamily: {
+            sans: ['Inter', 'ui-sans-serif', 'system-ui', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'Noto Sans', 'sans-serif'],
+            mono: ['IBM Plex Mono', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <!-- Favicons (replace with your assets) -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+
+  <style>
+    .bg-grid {
+      position: relative;
+      z-index: 0;
+    }
+
+    .bg-grid::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+
+      background-image: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0.5px, transparent 1px);
+      background-size: 24px 24px;
+      background-position: center;
+
+      /* Apply fade-out at the bottom only */
+      -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+      mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+      -webkit-mask-repeat: no-repeat;
+      mask-repeat: no-repeat;
+      -webkit-mask-size: 100% 100%;
+      mask-size: 100% 100%;
+      pointer-events: none;
+    }
+
+
+    .glass {
+      backdrop-filter: blur(8px);
+    }
+
+    /* Collapsible panel animation (mobile menu) */
+    .collapsible {
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height .32s cubic-bezier(.4, 0, .2, 1)
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .collapsible {
+        transition: none
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-ink-900 text-white antialiased">
+  <!-- Header -->
+  <header class="fixed top-0 inset-x-0 z-40 border-b border-white/5 bg-ink-900/70 glass">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="h-16 flex items-center justify-between">
+        <a href="#top" class="flex items-center justify-center gap-3 group bg-ink-900 px-2 rounded-lg">
+          <img src="assets/WarptoadLogo.svg" width="56" height="56" alt="Warptoad logo">
+          <span class="font-mono text-sm tracking-widest uppercase text-white/90 group-hover:text-white">Warptoad</span>
+        </a>
+
+        <nav class="hidden md:flex items-center gap-8 text-sm">
+          <a href="#about" class="text-white/70 hover:text-white">About</a>
+          <a href="#architecture" class="text-white/70 hover:text-white">How it works</a>
+          <a href="#why" class="text-white/70 hover:text-white">Why it matters</a>
+          <a href="#roadmap" class="text-white/70 hover:text-white">What's next</a>
+          <a href="#socials" class="text-white/70 hover:text-white">Socials</a>
+          <a href="https://github.com/warptoad/warp-toad" target="_blank" rel="noopener"
+            class="inline-flex items-center gap-2 bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-lg ring-1 ring-white/10">
+            <span>GitHub</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              class="lucide lucide-github-icon lucide-github">
+              <path
+                d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
+              <path d="M9 18c-4.51 2-5-2-7-2" />
+            </svg>
+          </a>
+        </nav>
+
+        <button id="menuBtn"
+          class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg hover:bg-white/5"
+          aria-label="Open menu">
+          <svg id="menuIcon" class="block" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12" />
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <line x1="3" y1="18" x2="21" y2="18" />
+          </svg>
+          <svg id="closeIcon" class="hidden" width="22" height="22" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div id="mobileNav" class="md:hidden hidden border-t border-white/5">
+      <!-- JS will remove `hidden` and control height via inline styles for smooth open/close -->
+      <div class="px-4 py-4 space-y-2 text-sm bg-ink-900/95">
+        <a href="#about" class="block px-3 py-2 rounded hover:bg-white/5">About</a>
+        <a href="#architecture" class="block px-3 py-2 rounded hover:bg-white/5">How it works</a>
+        <a href="#why" class="block px-3 py-2 rounded hover:bg-white/5">Why it matters</a>
+        <a href="#roadmap" class="block px-3 py-2 rounded hover:bg-white/5">What's next</a>
+        <a href="#socials" class="block px-3 py-2 rounded hover:bg-white/5">Socials</a>
+        <a href="https://github.com/warptoad/warp-toad" target="_blank" rel="noopener"
+          class="block px-3 py-2 rounded bg-white/5 hover:bg-white/10 ring-1 ring-white/10">GitHub</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="top" class="relative bg-grid">
+    <!-- HERO -->
+    <section class="pt-36 pb-20 relative">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+          <div>
+            <h1 class="mt-4 text-4xl sm:text-5xl font-extrabold leading-tight">
+              <span class="block underline">Warptoad</span>
+              <span class="block bg-clip-text text-violet-500">Cross-Chain Privacy</span>
+              <span class="block bg-clip-text text-neon-500">Token Standard</span>
+            </h1>
+            <p class="mt-6 text-lg text-white/70 max-w-prose">
+              A modular cross-chain privacy token standard enabling confidential, trustless asset transfers across EVM
+              chains using the "GigaTree".
+              </br>Built with Aztec and zero‑knowledge proofs.
+            </p>
+            <div class="mt-8 flex flex-wrap gap-3">
+              <a href="https://github.com/warptoad/warp-toad" target="_blank" rel="noopener"
+                class="inline-flex items-center gap-2 rounded-xl px-5 py-3 bg-neon-500/10 text-neon-500 ring-1 ring-neon-500/30 hover:ring-neon-500/60 hover:bg-neon-500/15">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                  class="lucide lucide-github-icon lucide-github">
+                  <path
+                    d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
+                  <path d="M9 18c-4.51 2-5-2-7-2" />
+                </svg>
+                View Code
+              </a>
+              <a href="#socials"
+                class="inline-flex items-center gap-2 rounded-xl px-5 py-3 bg-white/5 text-white ring-1 ring-white/10 hover:bg-white/10">
+                follow the project
+              </a>
+              <a href="#architecture"
+                class="inline-flex items-center gap-2 rounded-xl px-5 py-3 bg-white/0 text-white/70 hover:text-white">
+                How it works →
+              </a>
+            </div>
+            <div class="mt-6 text-xs text-white/50 font-mono">
+              warptoad.org · open‑source · research in progress
+            </div>
+          </div>
+
+          <!-- Diagram-ish visual -->
+          <div class="relative">
+            <div class="relative rounded-2xl border border-white/10 bg-ink-800 p-6">
+              <img src="assets/graphic1.png" alt="">
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about" class="py-20">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl sm:text-3xl font-bold">What is Warptoad?</h2>
+        <p class="mt-4 text-white/70 max-w-3xl">
+          Warptoad is a private cross-chain token standard.
+          It aggregates commitments from multiple chains into a unified "Giga Root" on Ethereum, enabling assets to move
+          between networks without revealing sender, recipient, or origin
+          chain. Integrate it as a composable privacy layer for your dApp, L2, or cross‑chain protocol.
+        </p>
+
+        <div class="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
+            <div class="font-semibold">Shielded Transfers</div>
+            <p class="mt-2 text-white/70 text-sm">Deposits and withdrawals are fully shielded.</p>
+          </div>
+          <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
+            <div class="font-semibold">Giga Root</div>
+            <p class="mt-2 text-white/70 text-sm">Commitments converge into a single Giga Merkle Root settled on
+              Ethereum.
+            </p>
+          </div>
+          <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
+            <div class="font-semibold">Bridge to/from any EVM Chain</div>
+            <p class="mt-2 text-white/70 text-sm">Bridge from L1 to L2 or the other way around without revealing where
+              you are coming from or going to.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ARCHITECTURE / HOW IT WORKS -->
+    <section id="architecture" class="py-20 bg-ink-800/60 border-y border-white/5">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between gap-6 flex-wrap">
+          <h2 class="text-2xl sm:text-3xl font-bold">How it works</h2>
+          <a href="https://github.com/warptoad/warp-toad" target="_blank" rel="noopener"
+            class="text-sm font-mono text-neon-500 hover:underline">Read the source →</a>
+        </div>
+
+        <div class="mt-10 grid lg:grid-cols-3 gap-6">
+          <div class="rounded-2xl border border-white/10 bg-ink-900/60 p-6">
+            <div class="text-sm font-semibold">1) Commitment Aggregation</div>
+            <p class="mt-2 text-white/70 text-sm">Warptoad ingests per‑chain commitments/notes and normalizes them into
+              a unified representation.</p>
+          </div>
+          <div class="rounded-2xl border border-white/10 bg-ink-900/60 p-6">
+            <div class="text-sm font-semibold">2) ZK Verification</div>
+            <p class="mt-2 text-white/70 text-sm">Zero‑knowledge proofs verify correctness without revealing
+              counterparties or origin chain.</p>
+          </div>
+          <div class="rounded-2xl border border-white/10 bg-ink-900/60 p-6">
+            <div class="text-sm font-semibold">3) Unified Root on Ethereum</div>
+            <p class="mt-2 text-white/70 text-sm">Aggregated state commits to Ethereum as a Merkle root; chains sync
+              against the canonical root.</p>
+          </div>
+        </div>
+
+        <div class="mt-10 grid md:grid-cols-2 gap-6">
+          <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
+            <div class="font-semibold">Near future Developer Experience</div>
+            <ul class="mt-3 text-white/70 text-sm list-disc list-inside space-y-1">
+              <li>Noir circuits and Aztec PXE integration</li>
+              <li>Simple proofs and note APIs (WIP)</li>
+              <li>Composable adapters for L1/L2s (WIP)</li>
+            </ul>
+          </div>
+          <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
+            <div class="font-semibold">Security Architecture</div>
+            <ul class="mt-3 text-white/70 text-sm list-disc list-inside space-y-1">
+              <li>Trustless settlement on Ethereum</li>
+              <li>No custodial bridge contracts</li>
+              <li>Explicit threat model and audits (planned)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WHY IT MATTERS -->
+    <section id="why" class="py-20">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl sm:text-3xl font-bold">Why it matters</h2>
+        <div class="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div class="rounded-2xl border border-white/10 bg-ink-800/60 p-6">
+            <div class="font-semibold">Unified privacy</div>
+            <p class="mt-2 text-white/70 text-sm">The size of the anonymity set directly affects how private a system
+              is. A unified Giga Root means users on small chains benefit from the same privacy guarantees as those on
+              Ethereum mainnet.</p>
+          </div>
+          <div class="rounded-2xl border border-white/10 bg-ink-800/60 p-6">
+            <div class="font-semibold">Invisible, Even Cross-Chain</div>
+            <p class="mt-2 text-white/70 text-sm">No more worrying about getting front-run on new chains. With Warptoad,
+              no one can see which chain you came from, or where you're bridging your funds to.</p>
+          </div>
+          <div class="rounded-2xl border border-white/10 bg-ink-800/60 p-6">
+            <div class="font-semibold">Composable Privacy Layer</div>
+            <p class="mt-2 text-white/70 text-sm">Most privacy solutions require a siloed setup or custom logic.
+              Composability allows Warptoad to be added to existing systems.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ROADMAP / STATUS -->
+    <section id="roadmap" class="py-20 bg-ink-800/60 border-y border-white/5">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-start justify-between gap-6 flex-wrap">
+          <div>
+            <h2 class="text-2xl sm:text-3xl font-bold">What's next</h2>
+            <p class="mt-2 text-white/70 max-w-prose">Targets/Milestones for the next version.</p>
+          </div>
+          <a href="https://github.com/warptoad/warp-toad" target="_blank" rel="noopener"
+            class="text-sm font-mono text-neon-500 hover:underline">Track progress →</a>
+        </div>
+
+        <div class="mt-10 grid md:grid-cols-4 gap-6">
+          <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
+            <div class="text-xs font-mono text-white/60">Task I</div>
+            <div class="mt-1 font-semibold">Permissionless GigaBridge</div>
+            <p class="mt-3 text-white/70 text-sm list-disc list-inside space-y-1">
+              Anyone can make their own Warptoad
+            </p>
+          </div>
+          <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
+            <div class="text-xs font-mono text-white/60">Task II</div>
+            <div class="mt-1 font-semibold">Sync Tree</div>
+            <p class="mt-3 text-white/70 text-sm list-disc list-inside space-y-1">
+              Intents on top of Warptoad to speed up bridging
+            </p>
+          </div>
+          <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
+            <div class="text-xs font-mono text-white/60">Task III</div>
+            <div class="mt-1 font-semibold">Railgun like UX</div>
+            <p class="mt-3 text-white/70 text-sm list-disc list-inside space-y-1">
+              Shielded transactions and DeFi interactions
+            </p>
+          </div>
+          <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
+            <div class="text-xs font-mono text-white/60">Task IV</div>
+            <div class="mt-1 font-semibold">Exit window preserving bridge</div>
+            <p class="mt-3 text-white/70 text-sm list-disc list-inside space-y-1">
+              Solving the existential </br> <strong>"what if malicious upgrade"</strong>
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="socials" class="py-20">
+      <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-2xl sm:text-3xl font-bold">Follow Warptoad for the latest developments</h2>
+        <p class="mt-4 text-white/70">Follow progress, help test early releases, or read the docs (once they are ready
+          😉).</p>
+
+        <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+          <a href="https://github.com/warptoad/warp-toad" target="_blank" rel="noopener"
+            class="inline-flex items-center gap-2 rounded-xl px-5 py-3 bg-white/5 text-white ring-1 ring-white/10 hover:bg-white/10">
+            GitHub
+          </a>
+          <a href="https://x.com/warptoad_xyz" target="_blank" rel="noopener"
+            class="inline-flex items-center gap-2 rounded-xl px-5 py-3 bg-white/5 text-white ring-1 ring-white/10 hover:bg-white/10">
+            X / Twitter
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-white/5 py-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-white/60">
+        <div>© <span id="year"></span> Warptoad.</div>
+        <div class="flex items-center gap-4">
+          <a href="mailto:contact@warptoad.org" class="hover:text-white">Contact</a>
+          <!--
+          <a href="/privacy" class="hover:text-white">Privacy</a>
+          <a href="/terms" class="hover:text-white">Terms</a>
+          -->
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Small scripts: mobile nav + year + smooth close on click -->
+  <script>
+    const menuBtn = document.getElementById('menuBtn');
+    const menuIcon = document.getElementById('menuIcon');
+    const closeIcon = document.getElementById('closeIcon');
+    const mobileNav = document.getElementById('mobileNav');
+    const yearEl = document.getElementById('year');
+    yearEl.textContent = new Date().getFullYear();
+
+    // --- Mobile menu: smooth collapse/expand ---
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (mobileNav) {
+      // prepare collapsible container
+      mobileNav.classList.remove('hidden'); // keep accessible if JS enabled
+      mobileNav.classList.add('collapsible');
+      mobileNav.style.maxHeight = '0px';
+      mobileNav.setAttribute('aria-hidden', 'true');
+      menuBtn?.setAttribute('aria-expanded', 'false');
+
+      const toggleMenu = () => {
+        const isOpen = mobileNav.getAttribute('aria-hidden') === 'false';
+        if (isOpen) {
+          mobileNav.style.maxHeight = '0px';
+          mobileNav.setAttribute('aria-hidden', 'true');
+          menuBtn?.setAttribute('aria-expanded', 'false');
+          menuIcon?.classList.remove('hidden');
+          closeIcon?.classList.add('hidden');
+        } else {
+          mobileNav.style.maxHeight = mobileNav.scrollHeight + 'px';
+          mobileNav.setAttribute('aria-hidden', 'false');
+          menuBtn?.setAttribute('aria-expanded', 'true');
+          menuIcon?.classList.add('hidden');
+          closeIcon?.classList.remove('hidden');
+        }
+      };
+
+      menuBtn?.addEventListener('click', toggleMenu);
+      mobileNav?.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+        // close after navigating
+        mobileNav.style.maxHeight = '0px';
+        mobileNav.setAttribute('aria-hidden', 'true');
+        menuBtn?.setAttribute('aria-expanded', 'false');
+        menuIcon?.classList.remove('hidden');
+        closeIcon?.classList.add('hidden');
+      }));
+    }
+
+    const isMobile = () => window.innerWidth < 768;
+
+    // Newsletter placeholder
+    document.getElementById('newsletter')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      alert("Thanks! We'll keep you posted. (Hook this up to Buttondown/Mailchimp/Postmark)");
+    });
+  </script>
+</body>
+
+</html>
