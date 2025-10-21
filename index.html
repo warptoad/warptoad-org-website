@@ -180,9 +180,8 @@
               <span class="block bg-clip-text text-neon-500">Token Standard</span>
             </h1>
             <p class="mt-6 text-lg text-white/70 max-w-prose">
-              A modular cross-chain privacy token standard enabling confidential, trustless asset transfers across EVM
-              chains using the "GigaTree".
-              </br>Built with Aztec and zero‑knowledge proofs.
+              A crosschain private token standard for aztec and EVM rollups. 
+              <br>Warptoad enables fully shielded transfers for both cross and regular transfers
             </p>
             <div class="mt-8 flex flex-wrap gap-3">
               <a href="https://github.com/warptoad/warp-toad" target="_blank" rel="noopener"
@@ -234,18 +233,17 @@
         <div class="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
             <div class="font-semibold">Shielded Transfers</div>
-            <p class="mt-2 text-white/70 text-sm">Deposits and withdrawals are fully shielded.</p>
+            <p class="mt-2 text-white/70 text-sm">Fully private transfers where everything is private: sender, recipient, which token, amount. 
+              <!-- <br>And for cross-chain transfers the destination chain!</p> -->
           </div>
           <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
             <div class="font-semibold">Giga Root</div>
-            <p class="mt-2 text-white/70 text-sm">Commitments converge into a single Giga Merkle Root settled on
-              Ethereum.
+            <p class="mt-2 text-white/70 text-sm">A root that contains all commitments of all chains!
             </p>
           </div>
           <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
-            <div class="font-semibold">Bridge to/from any EVM Chain</div>
-            <p class="mt-2 text-white/70 text-sm">Bridge from L1 to L2 or the other way around without revealing where
-              you are coming from or going to.</p>
+            <div class="font-semibold">cross-chain transfers</div>
+            <p class="mt-2 text-white/70 text-sm">Sending to a warptoad-address will automatically bridge to the preferred chain without revealing which chain that is!</p>
           </div>
         </div>
       </div>
@@ -263,18 +261,17 @@
         <div class="mt-10 grid lg:grid-cols-3 gap-6">
           <div class="rounded-2xl border border-white/10 bg-ink-900/60 p-6">
             <div class="text-sm font-semibold">1) Commitment Aggregation</div>
-            <p class="mt-2 text-white/70 text-sm">Warptoad ingests per‑chain commitments/notes and normalizes them into
-              a unified representation.</p>
+            <p class="mt-2 text-white/70 text-sm">Warptoad asynchronous creates an merkle tree with all commitments from all chains using the GigaBridge. Proving against this tree allows us keep private which chain the commitment was created.</p>
           </div>
           <div class="rounded-2xl border border-white/10 bg-ink-900/60 p-6">
-            <div class="text-sm font-semibold">2) ZK Verification</div>
-            <p class="mt-2 text-white/70 text-sm">Zero‑knowledge proofs verify correctness without revealing
-              counterparties or origin chain.</p>
+            <div class="text-sm font-semibold">2) Nullifiers</div>
+            <p class="mt-2 text-white/70 text-sm">Warptoad commitments contain the chainId of the destination chain and the recipient is forced to spend/nullify that commitment only on that chain. This allows us to only bridge the commitment tree roots and we can do that asynchronously.</p>
           </div>
           <div class="rounded-2xl border border-white/10 bg-ink-900/60 p-6">
-            <div class="text-sm font-semibold">3) Unified Root on Ethereum</div>
-            <p class="mt-2 text-white/70 text-sm">Aggregated state commits to Ethereum as a Merkle root; chains sync
-              against the canonical root.</p>
+            <div class="text-sm font-semibold">3) Exit window preserving</div>
+            <p class="mt-2 text-white/70 text-sm">The protocol will automatically disconnect from a warptoad instance, if the contract detects that the rollup code changed. 
+              The security council can prevent this disconnection if the change is deemed secure, but only before the change goes through. 
+              <br>The user can always exit during the exit window.</p>
           </div>
         </div>
 
@@ -283,8 +280,8 @@
             <div class="font-semibold">Near future Developer Experience</div>
             <ul class="mt-3 text-white/70 text-sm list-disc list-inside space-y-1">
               <li>Noir circuits and Aztec PXE integration</li>
-              <li>Simple proofs and note APIs (WIP)</li>
-              <li>Composable adapters for L1/L2s (WIP)</li>
+              <li>Simple private wallet API (WIP)</li>
+              <li>Composable adapters for L1/L2s bridge interfaces (WIP)</li>
             </ul>
           </div>
           <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
@@ -292,7 +289,10 @@
             <ul class="mt-3 text-white/70 text-sm list-disc list-inside space-y-1">
               <li>Trustless settlement on Ethereum</li>
               <li>No custodial bridge contracts</li>
-              <li>Explicit threat model and audits (planned)</li>
+              <l1>Only using the native rollup bridges</l1>
+    
+              <!-- did we plan this? -->
+              <!-- <li>Explicit threat model and audits (planned)</li> -->
             </ul>
           </div>
         </div>
